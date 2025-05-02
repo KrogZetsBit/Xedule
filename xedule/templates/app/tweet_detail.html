@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Note #{{ note.id }}
+{% endblock title %}
+{% block content %}
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Note Detail</h1>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'tweet_list' %}" class="btn btn-secondary">Back to list</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <span>Note #{{ note.id }}</span>
+      <div>
+        {% if note.status == 'pending' %}
+          <span class="badge badge-pill bg-warning">Pending</span>
+        {% elif note.status == 'published' %}
+          <span class="badge badge-pill bg-success">Published</span>
+        {% elif note.status == 'published_x' %}
+          <span class="badge badge-pill bg-dark">Published in X</span>
+        {% elif note.status == 'published_n' %}
+          <span class="badge badge-pill bg-secondary">Published in Nostr</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{ note.content }}</p>
+      <dl class="row mt-4">
+        <dt class="col-sm-3">Publish in:</dt>
+        <dd class="col-sm-9">
+          {% if note.publish_to_x %}<span class="badge bg-dark ms-2">X</span>{% endif %}
+          {% if note.publish_to_nostr %}<span class="badge bg-secondary ms-2">Nostr</span>{% endif %}
+        </dd>
+        <dt class="col-sm-3">Created on:</dt>
+        <dd class="col-sm-9">
+          {{ note.created_at }}
+        </dd>
+        {% if note.scheduled_time %}
+          <dt class="col-sm-3">Scheduled for:</dt>
+          <dd class="col-sm-9">
+            {{ note.scheduled_time }}
+          </dd>
+        {% endif %}
+        {% if note.published_at %}
+          <dt class="col-sm-3">Published on:</dt>
+          <dd class="col-sm-9">
+            {{ note.published_at }}
+          </dd>
+        {% endif %}
+        {% if note.tweet_id %}
+          <dt class="col-sm-3">Tweet ID:</dt>
+          <dd class="col-sm-9">
+            {{ note.tweet_id }}
+          </dd>
+        {% endif %}
+        {% if note.publish_to_nostr and note.nostr_id %}
+          <dt class="col-sm-3">Nostr ID:</dt>
+          <dd class="col-sm-9">
+            {{ note.nostr_id }}
+          </dd>
+        {% endif %}
+      </dl>
+    </div>
+    <div class="card-footer">
+      <a href="{% url 'tweet_update' note.id %}" class="btn btn-primary">Edit</a>
+      <a href="{% url 'tweet_delete' note.id %}" class="btn btn-danger">Delete</a>
+    </div>
+  </div>
+{% endblock content %}

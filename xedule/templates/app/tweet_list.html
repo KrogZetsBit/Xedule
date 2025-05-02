@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    <h1>My Notes</h1>
+    <div class="mb-3 d-flex justify-content-between">
+      <div>
+        <a href="{% url 'tweet_create' %}" class="btn btn-primary">Nuevo Note</a>
+      </div>
+      <div>
+        <button id="selectAllBtn" class="btn btn-outline-primary me-2">Seleccionar todos</button>
+        <button id="deselectAllBtn" class="btn btn-outline-secondary">Deseleccionar todos</button>
+      </div>
+      <a href="{% url 'tweet_bulk_upload' %}" class="btn btn-success">
+        <i class="bi bi-file-earmark-excel"></i> Carga Masiva
+      </a>
+    </div>
+    {% if tweets %}
+      <form method="post"
+            action="{% url 'bulk_delete_tweets' %}"
+            id="bulkDeleteForm">
+        {% csrf_token %}
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="w-40">
+                  <input type="checkbox" id="selectAll" />
+                </th>
+                <th>Contenido</th>
+                <th>Publicar en</th>
+                <th>Estado</th>
+                <th>Fecha programada</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for note in tweets %}
+                <tr>
+                  <td>
+                    <input type="checkbox"
+                           name="tweet_ids"
+                           value="{{ note.id }}"
+                           class="note-checkbox" />
+                  </td>
+                  <td>
+                    <a href="{% url 'tweet_detail' note.id %}">{{ note.content|truncatechars:50 }}</a>
+                  </td>
+                  <td>
+                    {% if note.publish_to_x %}
+                      <img src="{% static "/images/gorjeo.png" %}"
+                           height="25"
+                           class="d-inline-block align-top"
+                           alt="Nostr" />
+                    {% endif %}
+                    {% if note.publish_to_nostr %}
+                      <img src="https://camo.githubusercontent.com/8fc030d170b472876019dc1ff3b0b67d925034c8d441e6709bbb0a0631904b5b/68747470733a2f2f6e6f7374722e6275696c642f692f6e6f7374722e6275696c645f633538646131626162343238653766313835393664376562383062303536633530666239623939383535326261336230373764656532613163316538373066642e676966"
+                           height="25"
+                           class="d-inline-block align-top ms-2"
+                           alt="Nostr" />
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if note.status == 'pending' %}
+                      <span class="badge bg-warning text-dark">Pendiente</span>
+                    {% elif note.status == 'published' %}
+                      <span class="badge bg-success">Publicado</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ note.get_status_display }}</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ note.scheduled_time|default:"N/A" }}</td>
+                  <td>
+                    <a href="{% url 'tweet_detail' note.id %}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{% url 'tweet_update' note.id %}"
+                       class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'tweet_delete' note.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3">
+          <button type="submit" class="btn btn-danger" id="bulkDeleteBtn" disabled>Eliminar seleccionados</button>
+        </div>
+      </form>
+      {% include "./pagination.html" with page=page_obj %}
+    {% else %}
+      <div class="alert alert-info">No tienes tweets programados.</div>
+    {% endif %}
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const selectAllCheckbox = document.getElementById('selectAll');
+      const selectAllButton = document.getElementById('selectAllBtn');
+      const deselectAllButton = document.getElementById('deselectAllBtn');
+      const tweetCheckboxes = document.querySelectorAll('.note-checkbox');
+      const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+
+      // Función para actualizar el estado del botón de eliminar
+      function updateDeleteButtonState() {
+        const checkedBoxes = document.querySelectorAll('.note-checkbox:checked');
+        bulkDeleteBtn.disabled = checkedBoxes.length === 0;
+      }
+
+      // Event listener para el checkbox "seleccionar todos"
+      if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+          tweetCheckboxes.forEach(box => {
+            box.checked = this.checked;
+          });
+          updateDeleteButtonState();
+        });
+      }
+
+      // Event listeners para los checkboxes individuales
+      tweetCheckboxes.forEach(box => {
+        box.addEventListener('change', updateDeleteButtonState);
+      });
+
+      // Botón de seleccionar todos
+      if (selectAllButton) {
+        selectAllButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          tweetCheckboxes.forEach(box => {
+            box.checked = true;
+          });
+          if (selectAllCheckbox) selectAllCheckbox.checked = true;
+          updateDeleteButtonState();
+        });
+      }
+
+      // Botón de deseleccionar todos
+      if (deselectAllButton) {
+        deselectAllButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          tweetCheckboxes.forEach(box => {
+            box.checked = false;
+          });
+          if (selectAllCheckbox) selectAllCheckbox.checked = false;
+          updateDeleteButtonState();
+        });
+      }
+
+      // Inicialización
+      updateDeleteButtonState();
+    });
+  </script>
+{% endblock content %}
