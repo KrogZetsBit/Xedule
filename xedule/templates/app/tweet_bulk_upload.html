@@ -1,0 +1,63 @@
+<!-- templates/app/tweet_bulk_upload.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+  Bulk Upload Notes
+{% endblock title %}
+{% block content %}
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Bulk Upload Notes</h1>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'tweet_list' %}" class="btn btn-secondary">Back to list</a>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Instructions</h5>
+    </div>
+    <div class="card-body">
+      <p>Upload an Excel file (.xlsx) with tweets to schedule. The file should contain the following columns:</p>
+      <ul>
+        <li>
+          <strong>content</strong> (required): The note text (maximum 280 characters)
+        </li>
+        <li>
+          <strong>scheduled_time</strong> (optional): When to publish the note (format: YYYY-MM-DD HH:MM:SS)
+        </li>
+        <li>
+          <strong>publish_to_x</strong> (optional): To publish the note in X (format: yes, no)
+        </li>
+        <li>
+          <strong>publish_to_nostr</strong> (optional): To publish the note in Nostr (format: yes, no)
+        </li>
+      </ul>
+      <p>
+        <a href="{% url 'download_template' %}"
+           class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-download"></i> Download Template Excel
+        </a>
+      </p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="{{ form.excel_file.id_for_label }}" class="form-label">{{ form.excel_file.label }}</label>
+          {{ form.excel_file.errors }}
+          <input type="file"
+                 name="{{ form.excel_file.name }}"
+                 id="{{ form.excel_file.id_for_label }}"
+                 class="form-control"
+                 accept=".xlsx"
+                 required />
+          {% if form.excel_file.help_text %}<div class="form-text">{{ form.excel_file.help_text }}</div>{% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Upload and Process</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

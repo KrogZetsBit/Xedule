@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+  About
+{% endblock title %}
+{% block content %}
+  <section id="about" class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <h2 class="mb-4 fw-bold">About This Application</h2>
+        <p>
+          This application allows users to schedule and automatically publish notes to
+          <strong>X (formerly Twitter)</strong> and <strong>Nostr</strong> using the official X API.
+          Built with Django and Celery, the platform handles note scheduling, posting, and error management in a fully automated and reliable way.
+        </p>
+        <ul class="list-unstyled mt-4">
+          <li class="mb-2">
+            <span class="fw-semibold">📅 Note Scheduling</span>: Compose notes and choose when to post them.
+          </li>
+          <li class="mb-2">
+            <span class="fw-semibold">⚙️ Automated Publishing</span>: Notes are published automatically at the scheduled time.
+          </li>
+          <li class="mb-2">
+            <span class="fw-semibold">🔁 Retry Logic</span>: If posting fails, the system retries with exponential backoff.
+          </li>
+          <li class="mb-2">
+            <span class="fw-semibold">📊 Status Tracking</span>: See which notes are pending, published, or failed.
+          </li>
+          <li class="mb-2">
+            <span class="fw-semibold">🔒 Secure Authentication</span>: OAuth credentials are used to ensure secure access to the X API.
+          </li>
+        </ul>
+        <p class="mt-4">
+          This tool is ideal for individuals, content creators, and businesses who want to automate their social media workflow and ensure timely and consistent communication on the X and Nostr platforms.
+        </p>
+        <!-- Botón de acceso al dashboard -->
+        <div class="mt-4">
+          <a href={% url "tweet_list" %} class="btn btn-primary btn-lg">🚀 Go to Note Scheduler</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

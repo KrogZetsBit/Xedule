@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+  {% if form.instance.id %}
+    Editar Note
+  {% else %}
+    Nuevo Note
+  {% endif %}
+{% endblock title %}
+{% block content %}
+  <div class="row mb-4">
+    <div class="col">
+      <h1>
+        {% if form.instance.id %}
+          Editar Note
+        {% else %}
+          Crear Nuevo Note
+        {% endif %}
+      </h1>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'tweet_list' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    // Contador de caracteres
+    document.addEventListener('DOMContentLoaded', function() {
+      const textarea = document.getElementById('id_content');
+      const charCount = document.getElementById('charCount');
+
+      function updateCharCount() {
+        const count = textarea.value.length;
+        charCount.textContent = count + '/280 caracteres';
+
+        if (count > 280) {
+          charCount.classList.add('text-danger');
+        } else {
+          charCount.classList.remove('text-danger');
+        }
+      }
+
+      textarea.addEventListener('input', updateCharCount);
+      updateCharCount();
+    });
+  </script>
+{% endblock content %}
