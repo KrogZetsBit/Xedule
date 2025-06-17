@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9a45e30344b6002ab89e8c86b97efa426ea4b1353a92cf1a572c3e17015e70b6"
+            "sha256": "e1a9526bb3422d42f1dfb855934dafc470866be266ba9d7e57d2300473b2ba12"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -42,12 +42,12 @@
         },
         "argon2-cffi": {
             "hashes": [
-                "sha256:879c3e79a2729ce768ebb7d36d4609e3a78a4ca2ec3a9f12286ca057e3d0db08",
-                "sha256:c670642b78ba29641818ab2e68bd4e6a78ba53b7eff7b4c3815ae16abf91c7ea"
+                "sha256:694ae5cc8a42f4c4e2bf2ca0e64e51e23a040c6a517a85074683d3959e1346c1",
+                "sha256:fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.7'",
-            "version": "==23.1.0"
+            "markers": "python_version >= '3.8'",
+            "version": "==25.1.0"
         },
         "argon2-cffi-bindings": {
             "hashes": [
